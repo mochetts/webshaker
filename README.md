@@ -35,13 +35,7 @@ end
 
 ```ruby
 # Create a shaker out of a specific URL.
-# Make sure certain xpath is fulfilled before downloading the HTML content (to circumvent client dynamic hydration).
-# You can also wait for css: {wait_for: {css: ".some-class"}}
-# Or you can wait for some tag name: {wait_for: {tag_name: "body"}}
-shaker = Webshaker::Shaker.new(
-  "https://www.google.com",
-  {wait_for: {xpath: "/html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[3]"}}
-)
+shaker = Webshaker::Shaker.new("https://www.google.com")
 
 # Query anything about the website.
 result = shaker.shake(with_prompt: "What's this website about?")
@@ -65,6 +59,90 @@ result = shaker.shake(with_prompt: "Give me a list of all the links", respond_wi
 #    "/history/privacyadvisor/search/unauth?utm_source=googlemenu&fg=1&cctld=com",
 #    "/history/optout?hl=es-419&fg=1",
 #    "https://support.google.com/websearch/?p=ws_results_help&hl=es-419&fg=1"]}
+```
+
+### SPA dynamic hydration
+
+Sometimes, the page we want to scrape is a Single Page Application. This means that the initial HTML that is returned by the server does not contain the html that we want to scrape but a just a skeleton that gets filled in by JS scripting.
+
+In order to circumvent this, you can let the webshaker know that it needs to wait for some html content to appear before it scrapes the HTML.
+
+For example, you can wait for a certian XPath to show up:
+
+```rb
+shaker = Webshaker::Shaker.new(
+  "https://www.google.com",
+  {wait_for: {xpath: "/html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[3]"}}
+)
+
+result = shaker.shake(with_prompt: "What's this website about?")
+```
+
+You can also wait for certain css selector to be found:
+
+```rb
+shaker = Webshaker::Shaker.new(
+  "https://www.google.com",
+  {wait_for: {css: ".some-class"}}
+)
+
+result = shaker.shake(with_prompt: "What's this website about?")
+```
+
+Or you can wait for some specific node to become available:
+
+```rb
+shaker = Webshaker::Shaker.new(
+  "https://www.google.com",
+  {wait_for: {tag_name: "body"}}
+)
+
+result = shaker.shake(with_prompt: "What's this website about?")
+```
+
+### Responding with JSON
+
+In some scenarios (e.g when the communication is between 2 systems), it might be better to return json. To do so, just add the `respond_with: :json` keyword param to the `shake` call:
+
+```ruby
+# Create a shaker out of a specific URL.
+shaker = Webshaker::Shaker.new(
+  "https://www.google.com",
+  {wait_for: {xpath: "/html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[3]"}}
+)
+
+result = shaker.shake(with_prompt: "Give me a list of all the links", respond_with: :json)
+# =>
+#  {"links"=>
+#   ["https://mail.google.com/mail/&ogbl",
+#    "https://www.google.com/imghp?hl=es-419&ogbl",
+#    "https://accounts.google.com/ServiceLogin?hl=es-419&passive=true&continue=https://www.google.com/&ec=GAZAmgQ",
+#    "/search?sca_esv=08a7c6c574dce941&sca_upv=1&q=vela+olimpiadas&oi=ddle&ct=335645951&hl=es-419&sa=X&ved=0ahUKEwiBsrmL9taHAxWGq5UCHV1hEJkQPQgC",
+#    "https://about.google/?utm_source=google-UY&utm_medium=referral&utm_campaign=hp-footer&fg=1",
+#    "https://www.google.com/intl/es-419_uy/ads/?subid=ww-ww-et-g-awa-a-g_hpafoot1_1!o2&utm_source=google.com&utm_medium=referral&utm_campaign=google_hpafooter&fg=1",
+#    "https://www.google.com/services/?subid=ww-ww-et-g-awa-a-g_hpbfoot1_1!o2&utm_source=google.com&utm_medium=referral&utm_campaign=google_hpbfooter&fg=1",
+#    "https://google.com/search/howsearchworks/?fg=1",
+#    "https://policies.google.com/privacy?hl=es-419&fg=1",
+#    "https://policies.google.com/terms?hl=es-419&fg=1",
+#    "https://www.google.com/preferences?hl=es-419&fg=1",
+#    "/advanced_search?hl=es-419&fg=1",
+#    "/history/privacyadvisor/search/unauth?utm_source=googlemenu&fg=1&cctld=com",
+#    "/history/optout?hl=es-419&fg=1",
+#    "https://support.google.com/websearch/?p=ws_results_help&hl=es-419&fg=1"]}
+```
+
+### Temperature
+
+Sometimes we need to adjust the prompt temperature to give the result a bit of randomness. In order to do so, you can simply pass the `temperature` keyword to the `shake` call:
+
+```rb
+# Create a shaker out of a specific URL.
+shaker = Webshaker::Shaker.new(
+  "https://www.google.com",
+  {wait_for: {xpath: "/html/body/div[1]/div[3]/form/div[1]/div[1]/div[1]/div/div[3]"}}
+)
+
+result = shaker.shake(with_prompt: "Give me a list of all the links", respond_with: :json, temperature: 0.2)
 ```
 
 ## Development
