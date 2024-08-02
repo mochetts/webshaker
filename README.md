@@ -1,6 +1,11 @@
 # Webshaker
 
-An intelligent web scraper that uses Selenium WebDriver to scrape a URL and parse its content using AI.
+
+|  Tests |  Coverage  |
+|:-:|:-:|
+| [![Tests](https://github.com/mochetts/webshaker/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/mochetts/webshaker/actions/workflows/main.yml)  |  [![Codecov Coverage](https://codecov.io/github/mochetts/webshaker/graph/badge.svg?token=SKTT14JJGV)](https://codecov.io/github/mochetts/webshaker) |
+
+An intelligent web scraper that uses Selenium WebDriver to scrape a URL and parse it using AI.
 
 ## Installation
 
