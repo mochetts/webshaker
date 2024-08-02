@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "selenium-webdriver", "~> 4.0"
   spec.add_dependency "ruby-openai"
+  spec.add_dependency "nokogiri"
 end

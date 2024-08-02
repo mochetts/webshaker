@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    webshaker (0.0.1)
+    webshaker (0.0.2)
+      nokogiri
       ruby-openai
       selenium-webdriver (~> 4.0)
 
@@ -42,6 +43,8 @@ GEM
     multipart-post (2.4.1)
     net-http (0.4.1)
       uri
+    nokogiri (1.16.7-x86_64-darwin)
+      racc (~> 1.4)
     parallel (1.25.1)
     parser (3.3.4.0)
       ast (~> 2.4.1)
