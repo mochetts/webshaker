@@ -1,5 +1,6 @@
 require "webshaker/scrape_result"
 require "webshaker/scraper"
+require "webshaker/ai"
 require "webshaker/shaker"
 
 module Webshaker
