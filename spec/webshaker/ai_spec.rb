@@ -37,7 +37,7 @@ RSpec.describe Webshaker::Ai do
 
     context "when setting the response format and the temperature" do
       let(:temperature) { 0.5 }
-      let(:respond_with) { :json }
+      let(:respond_with) { "json" }
       let(:ai_response) { {a: "b"}.to_json }
       let(:response_format) { {response_format: {type: "json_object"}} }
 
@@ -50,7 +50,7 @@ RSpec.describe Webshaker::Ai do
       end
 
       it "returns the full response" do
-        expect(subject.analyze(with_prompt: prompt, respond_with: :json, temperature:, full_response: true)).to eq(client_response)
+        expect(subject.analyze(with_prompt: prompt, respond_with:, temperature:, full_response: true)).to eq(client_response)
       end
     end
   end

@@ -13,7 +13,7 @@ module Webshaker
           messages: messages(with_prompt).concat((respond_with.to_sym == :json) ? [{role: "user", content: "respond with json"}] : []),
           temperature:
         }.merge(
-          (respond_with == :json) ? {response_format: {type: "json_object"}} : {}
+          (respond_with.to_sym == :json) ? {response_format: {type: "json_object"}} : {}
         )
       )
 
@@ -21,7 +21,7 @@ module Webshaker
       return response if full_response
 
       response = response["choices"][0]["message"]["content"]
-      response = JSON.parse(response) if respond_with === :json
+      response = JSON.parse(response) if respond_with.to_sym === :json
       response
     end
 
