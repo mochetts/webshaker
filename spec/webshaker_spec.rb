@@ -2,7 +2,7 @@
 
 RSpec.describe Webshaker do
   it "has a version number" do
-    expect(Webshaker::VERSION).to eq "0.0.3"
+    expect(Webshaker::VERSION).to eq "0.0.4"
   end
 
   it "allows to configure" do

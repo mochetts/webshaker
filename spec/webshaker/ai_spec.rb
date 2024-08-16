@@ -48,10 +48,10 @@ RSpec.describe Webshaker::Ai do
       it "users the response format and the temperature" do
         expect(subject.analyze(with_prompt: prompt, respond_with:, temperature:)).to eq(JSON.parse(ai_response))
       end
-    end
 
-    it "returns the full response" do
-      expect(subject.analyze(with_prompt: prompt, respond_with: :full)).to eq(client_response)
+      it "returns the full response" do
+        expect(subject.analyze(with_prompt: prompt, respond_with: :json, temperature:, full_response: true)).to eq(client_response)
+      end
     end
   end
 end

@@ -6,7 +6,7 @@ module Webshaker
       @html_content = html_content
     end
 
-    def analyze(with_prompt:, respond_with: :text, temperature: 0.8)
+    def analyze(with_prompt:, respond_with: :text, temperature: 0.8, full_response: false)
       response = ai_client.chat(
         parameters: {
           model: Webshaker.config.model,
@@ -18,7 +18,7 @@ module Webshaker
       )
 
       # Return full response from the ai client if the respond_with is set to :full
-      return response if respond_with === :full
+      return response if full_response
 
       response = response["choices"][0]["message"]["content"]
       response = JSON.parse(response) if respond_with === :json
