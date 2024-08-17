@@ -4,11 +4,15 @@ require "nokogiri"
 
 module Webshaker
   class Scraper
-    attr_reader :url, :driver, :options
+    attr_reader :url, :driver, :options, :status_update
 
-    def initialize(url, options = {})
+    def initialize(url, options = {}, status_update: ->(status) {})
       @url = url
       @options = options
+      @status_update = status_update
+
+      status_update.call(:scrape_init)
+
       @driver = Selenium::WebDriver.for(
         :chrome,
         options: Selenium::WebDriver::Chrome::Options.new.tap(&method(:configure))
@@ -16,14 +20,19 @@ module Webshaker
     end
 
     def scrape
+      status_update.call(:scrape_start)
+
       driver.navigate.to url
 
       do_wait
 
       screenshot = driver.screenshot_as :base64
-      html_content = driver.page_source
+      html_content = clean_up(driver.page_source)
       driver.quit
-      ScrapeResult.new(screenshot, clean_up(html_content))
+
+      status_update.call(:scrape_done)
+
+      ScrapeResult.new(screenshot, html_content)
     end
 
     def self.scrape(url, options = {})
@@ -44,6 +53,8 @@ module Webshaker
 
       wait = Selenium::WebDriver::Wait.new(timeout: 10) # Waits a maximum of 10 seconds
 
+      status_update.call(:scrape_waiting)
+
       wait.until do
         if wait_until.is_a?(Proc)
           wait_until.call(driver)
@@ -56,6 +67,7 @@ module Webshaker
 
     def clean_up(html_content)
       # Parse the HTML content
+      status_update.call(:scrape_cleaning)
 
       doc = Nokogiri::HTML5(html_content)
 

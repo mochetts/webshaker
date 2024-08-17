@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    webshaker (0.0.5)
+    webshaker (0.0.6)
       nokogiri
       ruby-openai
       selenium-webdriver (~> 4.0)

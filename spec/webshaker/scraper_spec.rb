@@ -5,7 +5,11 @@ RSpec.describe Webshaker::Scraper do
 
   let(:url) { "https://example.com" }
   let(:options) { {} }
-  let(:scraper) { described_class.new(url, options) }
+  let(:status_updates) { [] }
+  let(:status_update) {
+    ->(status) { status_updates << status }
+  }
+  let(:scraper) { described_class.new(url, options, status_update:) }
   let(:mock_driver) { instance_double(Selenium::WebDriver::Driver) }
   let(:mock_navigate) { instance_double(Selenium::WebDriver::Navigation) }
   let(:mock_options) { instance_double(Selenium::WebDriver::Chrome::Options) }
@@ -80,6 +84,10 @@ RSpec.describe Webshaker::Scraper do
       it "waits for the specified css element" do
         expect(Selenium::WebDriver::Wait).to have_received(:new).with(timeout: 10)
         expect(mock_driver).to have_received(:find_element).with(:css, ".some-class")
+      end
+
+      it "executes the status updates" do
+        expect(status_updates).to eq [:scrape_init, :scrape_start, :scrape_waiting, :scrape_cleaning, :scrape_done]
       end
     end
 

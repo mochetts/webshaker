@@ -1,8 +1,12 @@
 require "spec_helper"
 
 RSpec.describe Webshaker::Ai do
-  subject { described_class.new(html_content) }
+  subject { described_class.new(html_content, status_update:) }
 
+  let(:status_updates) { [] }
+  let(:status_update) {
+    ->(status) { status_updates << status }
+  }
   let(:ai_client) { instance_double(OpenAI::Client) }
   let(:html_content) { "<html></html>" }
   let(:prompt) { "prompt" }
@@ -51,6 +55,11 @@ RSpec.describe Webshaker::Ai do
 
       it "returns the full response" do
         expect(subject.analyze(with_prompt: prompt, respond_with:, temperature:, full_response: true)).to eq(client_response)
+      end
+
+      it "executes the status updates" do
+        subject.analyze(with_prompt: prompt, respond_with:, temperature:, full_response: true)
+        expect(status_updates).to eq [:ai_start, :ai_done]
       end
     end
   end

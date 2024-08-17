@@ -6,7 +6,8 @@ RSpec.describe Webshaker::Shaker do
   let(:shaker) { described_class.new(url, scrape_options) }
   let(:scraper) { instance_double("Webshaker::Scraper") }
   let(:ai) { instance_double("Webshaker::AI") }
-  let(:scrape_result) { OpenStruct.new(html: "<html></html>") }
+  let(:html) { "<html></html>" }
+  let(:scrape_result) { OpenStruct.new(html:) }
   let(:ai_result) { "response text" }
   let(:prompt) { "prompt" }
 
@@ -48,6 +49,17 @@ RSpec.describe Webshaker::Shaker do
 
       it "returns the AI response as JSON" do
         expect(shaker.shake(with_prompt: prompt, temperature: 0.5)).to eq(ai_result)
+      end
+    end
+
+    context "when passing in a status_update lambda" do
+      let(:status_update) { ->(status) { puts status } }
+      let(:shaker) { described_class.new(url, scrape_options, status_update:) }
+
+      it "passes it along" do
+        shaker.shake(with_prompt: prompt)
+        expect(Webshaker::Scraper).to have_received(:new).with(url, scrape_options, status_update:)
+        expect(Webshaker::Ai).to have_received(:new).with(html, status_update:)
       end
     end
   end
