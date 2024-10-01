@@ -14,7 +14,7 @@ group :development, :test do
   gem "pry-rescue", "~> 1.5"
   gem "dotenv"
   gem "pry-stack_explorer", "~> 0.6.1"
-  gem "standard", "~> 1.36"
+  gem "standard", "~> 1.40"
 end
 
 group :test do
